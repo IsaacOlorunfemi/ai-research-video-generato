@@ -1,0 +1,1643 @@
+{
+  "name": "AI Research, Image & Video Generator 2",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -6672,
+        1408
+      ],
+      "id": "3833b8d3-efc3-420f-832e-79cc1f2e55a0",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "entries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -7216,
+        1408
+      ],
+      "id": "14d755e4-0ced-4a35-8bd4-b21e211e8f1e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v2/scrape",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $json.url }}\",\n  \"formats\": [\n    \"markdown\",\n    \"html\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -6336,
+        1424
+      ],
+      "id": "60bb8205-bc54-4112-a789-b848b0f9997b",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "J6m3tAwPuvPoGcy6",
+          "name": "Firecrawl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -6032,
+        1424
+      ],
+      "id": "18204b84-7591-494b-b13d-4023f7d66808",
+      "name": "Wait",
+      "webhookId": "a3e7eea6-2ea8-45ae-abcb-12af3d77e072"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "search_results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -7600,
+        1024
+      ],
+      "id": "5028a2c7-f704-4f21-9f3c-503e5087fb4a",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "cac4a4f1-f30d-4cef-9e29-b08c175954d2",
+      "name": "Weekly Topic Research",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -8016,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "26BtUxzByFBQTQD4",
+          "mode": "list",
+          "cachedResultName": "AI Video Topics",
+          "cachedResultUrl": "/projects/R3WPuhQcMLdx8kJq/datatables/26BtUxzByFBQTQD4"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video_created": false,
+            "url": "={{ $json.url }}",
+            "Topic": "={{ $json.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "viral_score",
+              "displayName": "viral_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "controversy_score",
+              "displayName": "controversy_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "authority_score",
+              "displayName": "authority_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "total_score",
+              "displayName": "total_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "video_created",
+              "displayName": "video_created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -7392,
+        1024
+      ],
+      "id": "bf404f5e-a7dc-4d5c-a453-cddce9fa49c7",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "26BtUxzByFBQTQD4",
+          "mode": "list",
+          "cachedResultName": "AI Video Topics",
+          "cachedResultUrl": "/projects/R3WPuhQcMLdx8kJq/datatables/26BtUxzByFBQTQD4"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "video_created",
+              "condition": "isFalse"
+            }
+          ]
+        },
+        "limit": 2
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -7760,
+        1408
+      ],
+      "id": "14abb585-0c3e-41f4-9dec-e8f2b2baafc2",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"selected_topic\": \"...\",\n  \"original_topic\": \"...\",\n  \"reason\": \"One short sentence explaining why\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -5584,
+        1328
+      ],
+      "id": "edf5d868-c88b-45d6-a945-dcbad70f6342",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -5728,
+        1328
+      ],
+      "id": "b81b32b9-47c0-453a-b939-651cd6902a1f",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "y32qVBTxR9GAAIsA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const allRows = $input.all();\n\nconst entries = allRows.map(row => ({\n  topic: row.json.topic,\n  url: row.json.url\n}));\n\nreturn [{\n  json: {\n    entries\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -7552,
+        1408
+      ],
+      "id": "daf026f2-e524-4370-ac87-3d627cdb9301",
+      "name": "Wrap topics and url in array"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"slides\": [\n    { \"type\": \"hook\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"cta\", \"text\": \"...\" }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -5200,
+        1264
+      ],
+      "id": "9de3c195-6091-457b-89af-443b405295f3",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.2",
+          "mode": "list",
+          "cachedResultName": "gpt-5.2"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -5024,
+        1280
+      ],
+      "id": "4ec019c7-e9a4-45bd-948e-f75b1c5d98fb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "y32qVBTxR9GAAIsA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"prompts\": [\n{\n\"slide_index\": 1,\n\"visual_prompt\": \"...\",\n\"text\": \"the slide text\"\n}\n]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -4848,
+        1264
+      ],
+      "id": "8b9cc55a-5557-4951-92a3-83b7e3b6d647",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.slides }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a cinematic visual director creating highly realistic, human-centered photography concepts.\n\nFor each slide:\n\nCreate a unique scene involving real human subjects.\n\nUse varied environments (office, street, café, home workspace, studio, nighttime city, etc.).\n\nUse different camera styles (close-up portrait, over-the-shoulder, wide angle, shallow depth of field, documentary style).\n\nUse diverse lighting (natural window light, golden hour, moody shadows, practical indoor lighting, cinematic rim light).\n\nAvoid generic “blue AI hologram” visuals.\n\nThe text captions must be in small burst with line breaks for easy positioning in slides\n\nAvoid floating dashboards unless contextually necessary.\n\nPrioritize authenticity over futurism.\n\nAdd subtle tech elements only if relevant.\n\nMake each slide visually distinct.\n\nReturn JSON:\n\n{\n\"prompts\": [\n{\n\"slide_index\": 1,\n\"visual_prompt\": \"...\"\n}\n]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -5024,
+        1056
+      ],
+      "id": "6db49670-bcdd-4476-97a7-5e2ac73ea2c0",
+      "name": "Image Prompt AI Agent"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $('AI Agent - Create topic with reason').item.json.output.selected_topic }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1LO_FvIgXV6c1377jGqos4nNTYQAiGpsw",
+          "mode": "list",
+          "cachedResultName": "AI Videos",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1LO_FvIgXV6c1377jGqos4nNTYQAiGpsw"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -5584,
+        1056
+      ],
+      "id": "656ff22c-b803-46c2-870f-97b9699ee8a6",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HjlDNy6uLV6UPNMg",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Topic:  {{ $('AI Agent - Create topic with reason').item.json.output.selected_topic }}\nSummary: {{ $('Topic and web scrape in array').item.json.entries[0].website_content }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a high-authority AI content strategist. You will be given a topic and content summary of a relevant URL\n\nCreate a 7-slide vertical slideshow for the topic and summary\n\nRequirements:\n\nSlide 1: Pattern interrupt hook (contrarian, bold)\n\nSlides 2–6: Skimmable insights (max 18 words each)\n\nSlide 7: Strong CTA\n\nAvoid generic AI commentary\n\nIMPORTANT\n-Don't EVER use em dashes\n-Ensure the prompt is not in violation of the  content filters policies\n-Make the language easy to understand and relatable to the layman\n\n\nReturn ONLY JSON:\n\n{\n  \"slides\": [\n    { \"type\": \"hook\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"value\", \"text\": \"...\" },\n    { \"type\": \"cta\", \"text\": \"...\" }\n  ]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -5376,
+        1056
+      ],
+      "id": "96a6cfb8-575a-44d4-b91b-57b311f548d0",
+      "name": "Create Slideshow Theme AI Agent"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.prompts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -4656,
+        1056
+      ],
+      "id": "20e6fb5d-0671-491e-a17d-ecaca32cc9cc",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -4192,
+        1056
+      ],
+      "id": "7ba897cf-b4e3-4b40-af59-e216b269de9f",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "=Slide {{ $('Split Out2').item.json.slide_index }} - {{ $('Split Out2').item.json.text }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2912,
+        912
+      ],
+      "id": "4921fac0-a51c-452e-8c42-700f838559a7",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HjlDNy6uLV6UPNMg",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -2112,
+        1072
+      ],
+      "id": "1df7237c-8609-48d2-8f74-68ca6024e238",
+      "name": "Wait1",
+      "webhookId": "f5fd867d-854d-4d83-9df4-c19487f25b02"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ideogram.ai/v1/ideogram-v3/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $('Split Out2').item.json.visual_prompt }}"
+            },
+            {
+              "name": "rendering_speed",
+              "value": "TURBO"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -3520,
+        1072
+      ],
+      "id": "cfdc65bc-8f5f-4e2d-9540-46ccce662c16",
+      "name": "Create Images",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1nRtb5LYqKE4glc",
+          "name": "Ideogram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data[0].url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -3264,
+        1072
+      ],
+      "id": "1be23964-1c2c-4317-ad9f-4d04234ed461",
+      "name": "Download image"
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone",
+            "allowFileDiscovery": true
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2736,
+        1072
+      ],
+      "id": "c66810f6-e124-4583-89da-090333261099",
+      "name": "Share file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HjlDNy6uLV6UPNMg",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2400,
+        1088
+      ],
+      "id": "97555095-106f-49ff-a5f0-470cd7c23b88",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {
+              "content": "=Search the web for the top trending discussions about AI automation, AI agents, and no-code tools in the last 7 days.\nReturn:\n\nTopic\nWhy it’s trending\nSource\nControversial angle\nCommon misconception"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 1,
+      "position": [
+        -7808,
+        1024
+      ],
+      "id": "27848083-5f28-4270-95c7-99d3de0b6862",
+      "name": "Search for topics",
+      "credentials": {
+        "perplexityApi": {
+          "id": "RLY5lEHoQKPIFHpB",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.entries }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a strategic content selector for an AI automation brand.\n\nYou are given 7 trending AI topics with URLs., and the scraped web content of the given URLs\n\nYour task:\n\nEvaluate each topic for:\n\nViral potential\n\nControversy or tension\n\nAuthority positioning\n\nRelevance to the AI field\n\nSelect ONE topic that would produce the strongest engagement slideshow.\n\nRewrite it into an engaging, interesting title (max 12 words).\n\nDo not use em dashes\n\nReturn ONLY valid JSON:\n\n{\n  \"selected_topic\": \"...\",\n  \"original_topic\": \"...\",\n  \"reason\": \"One short sentence explaining why\"\n}\n\nNo commentary, no markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -5936,
+        1056
+      ],
+      "id": "ade5ca71-6a00-4d60-b109-03dd7693b3a3",
+      "name": "AI Agent - Create topic with reason"
+    },
+    {
+      "parameters": {
+        "jsCode": "const splitOutItems = $('Split Out').all();\nconst httpRequestItems = $('HTTP Request').all();\n\nconst entries = httpRequestItems.map((row, index) => ({\n  topic: splitOutItems[index].json.topic,\n  url: splitOutItems[index].json.url,\n  website_content: row.json.data?.markdown\n}));\n\nreturn [{\n  json: {\n    entries\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -6320,
+        1056
+      ],
+      "id": "0a8d6f44-0464-4c1e-a4f2-635fafae36df",
+      "name": "Topic and web scrape in array"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.4",
+          "mode": "list",
+          "cachedResultName": "GPT-5.4"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Create a video prompt for a short, engaging video (20–30 seconds) on the topic \"{{ $('Get row(s)').item.json.topic }}\".\n\nThe prompt is for a HeyGen API, nad it should signify to use the provided images as visual inspiration for each scene:\n- First scene theme (Hook): {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[0].text }} - inspired by image 1\n- Second scene theme (Value): {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[1].text }} - inspired by image 2\n- Third scene theme (Value): {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[2].text }} - inspired by image 3\n- Fourth scene theme (Value): {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[3].text }} - inspired by image 4\n- Fifth scene theme (Value): {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[4].text }} - inspired by image 5\n- Final scene theme: {{ $('Create Slideshow Theme AI Agent').item.json.output.slides[0].text }} - inspired by image 6\n\nStyle:\n- modern, cinematic\n- smooth transitions\n- slight motion (zoom/pan)\n- consistent color grading\n\nDo not copy images exactly — use them as reference for composition and mood.\n\nOutput only the prompt\nMake sure the prompt is JSON friendly and escapes quotes as it will be used in a JSON for API request"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -3328,
+        352
+      ],
+      "id": "90333471-bacd-47db-9fae-dffce31473dc",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "y32qVBTxR9GAAIsA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data_download"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2016,
+        368
+      ],
+      "id": "0bd07afd-9e00-4256-b73a-984ebf82d503",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HjlDNy6uLV6UPNMg",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "detail_array",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2624,
+        352
+      ],
+      "id": "a5e4bd1e-f62c-4fe2-a3b7-e573ca42069a",
+      "name": "Split ovt to download images"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2336,
+        352
+      ],
+      "id": "faeadc5d-832a-4a40-836e-d58fe12ac97c",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const splitOutItems = $(\"Split Out2\").all();\nconst loopOverItems = $(\"Loop Over Items1\").all();\nconst currentItems = $input.all();\n\nconst detail_schema = currentItems.map((row, index) => ({\n  url: loopOverItems[index].json.webContentLink.replace('&export=download', ''),\n  id: loopOverItems[index].json.id,\n  slide_index: splitOutItems[index].json.slide_index,\n  caption:splitOutItems[index].json.text\n}));\n\nreturn [{\n  json: {\n    detail_schema\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3920,
+        816
+      ],
+      "id": "48cbbafa-dc68-443b-be68-9f6b3def24c9",
+      "name": "Gather details of images"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05f59f0f-ef94-46bc-a7c1-037437125122",
+              "name": "detail_array",
+              "value": "={{ $('Gather details of images').item.json.detail_schema }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2944,
+        352
+      ],
+      "id": "56b4a802-c786-4331-baae-418cb9ef48f5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const loopOverItems = $(\"Loop Over Items2\").all();\nconst currentItems = $input.all();\n\nconst asset_id = currentItems.map((row, index) => ({\n  id: loopOverItems[index].json.data.id\n}));\n\nreturn [{\n  json: {\n    asset_id\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2032,
+        48
+      ],
+      "id": "9b375123-7e02-4491-a999-15a8093fb249",
+      "name": "Gather details of images1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://upload.heygen.com/v1/asset",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data_download",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1728,
+        368
+      ],
+      "id": "47966ee6-e5c6-42b9-a83e-09c08cb7c415",
+      "name": "Add Assets to Heygen",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yoH0fKz1wnjNva8r",
+          "name": "Heygen"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v1/video_agent/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"prompt\": $('Message a model').item.json.output[0].content[0].text, \"files\": $json.asset_id.map(item => ({\"asset_id\": item.id})) } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1632,
+        48
+      ],
+      "id": "de0cf5dd-3cc3-40ef-b2a2-f2314230a86e",
+      "name": "Generate Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Qfl2l18jA0lPrzak",
+          "name": "Massachusetts Build Code"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3c60c11c-03f7-4d9c-ba93-8006a827712b",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1152,
+        48
+      ],
+      "id": "d1a8c288-23e2-42e6-a2a1-b1dd6ab2dcac",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        64
+      ],
+      "id": "fa8a2dd7-fed6-4336-8ddf-7509f2cfa533",
+      "name": "Wait2",
+      "webhookId": "38cb1270-35e3-4981-9e86-ac94069a4cd5"
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v1/video_status.get",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_id",
+              "value": "={{ $('Generate Video').item.json.data.video_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1360,
+        48
+      ],
+      "id": "65278453-b82c-46ab-a196-7e20f8e5fde2",
+      "name": "Get Generated Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yoH0fKz1wnjNva8r",
+          "name": "Heygen"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Generated Video').item.json.data.video_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data_video"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -832,
+        -192
+      ],
+      "id": "bfb8757c-99c5-4eea-a095-9a1a1c8f6b3b",
+      "name": "Download Video"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "26BtUxzByFBQTQD4",
+          "mode": "list",
+          "cachedResultName": "AI Video Topics",
+          "cachedResultUrl": "/projects/R3WPuhQcMLdx8kJq/datatables/26BtUxzByFBQTQD4"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "Topic",
+              "keyValue": "={{ $('AI Agent - Create topic with reason').item.json.output.original_topic }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video_created": true
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "video_created",
+              "displayName": "video_created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "viral_score",
+              "displayName": "viral_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "controversy_score",
+              "displayName": "controversy_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "authority_score",
+              "displayName": "authority_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        -192
+      ],
+      "id": "1821206a-e866-4609-985e-63d5b9216407",
+      "name": "Update row(s)"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "data_video",
+        "name": "={{ $('AI Agent - Create topic with reason').item.json.output.selected_topic }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -624,
+        -192
+      ],
+      "id": "5a174c5b-404d-4a6d-acdd-807b9b045ddb",
+      "name": "Upload Video",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HjlDNy6uLV6UPNMg",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "id": "fe130cfb-f700-4272-ac8a-7c07971fbebb",
+      "name": "Daily Generation",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -8176,
+        1440
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Topic and web scrape in array",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly Topic Research": {
+      "main": [
+        [
+          {
+            "node": "Search for topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Wrap topics and url in array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent - Create topic with reason",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Create topic with reason",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Create Slideshow Theme AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wrap topics and url in array": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Create Slideshow Theme AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Image Prompt AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Image Prompt AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Slideshow Theme AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Create Slideshow Theme AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Gather details of images",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Share file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Images": {
+      "main": [
+        [
+          {
+            "node": "Download image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download image": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share file": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for topics": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Create topic with reason": {
+      "main": [
+        [
+          {
+            "node": "Create folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic and web scrape in array": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Create topic with reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Add Assets to Heygen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split ovt to download images": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Gather details of images1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather details of images": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split ovt to download images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather details of images1": {
+      "main": [
+        [
+          {
+            "node": "Generate Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Assets to Heygen": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video": {
+      "main": [
+        [
+          {
+            "node": "Get Generated Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Get Generated Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Generated Video": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Upload Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Generation": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c0d78f4e-50de-4ef0-a00a-7e3d6fae538e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "02baa5749fa5cea6cf8f77ef8835a724de13604bb322419377197005f98ff247"
+  },
+  "nodeGroups": [],
+  "id": "tM8mL4qpWlOl8Del",
+  "tags": []
+}
